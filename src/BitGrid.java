@@ -25,36 +25,58 @@ public class BitGrid {
         }
     }
     void startGame(int length){
-        int secretCode[] = new int[length],attempts = 0;
+        int[] secretCode = new int[length];
+        int attempts = 0;
         for(int i = 0; i < length; i++){
             secretCode[i] = (int)(Math.random()*10);
         }
-        while(true) {
+        while(attempts < 10){
             attempts++;
             System.out.println("Enter guess: ");
             String guessVar = sc.nextLine();
-            int wrongPosition = 0, correctPosition = 0;
-
-            int guess[] = new int[length];
-            for (int i = 0; i < length; i++) {
+            if(guessVar.length() != length){
+                System.out.println("Enter a " + length + " digit number");
+                attempts--;
+                continue;
+            }
+            int[] guess = new int[length];
+            for(int i = 0; i < length; i++){
                 guess[i] = guessVar.charAt(i) - '0';
             }
-            for (int i = 0; i < length; i++) {
-                if (guess[i] == secretCode[i])
+            int correctPosition = 0;
+            int wrongPosition = 0;
+            boolean[] secretUsed = new boolean[length];
+            boolean[] guessUsed = new boolean[length];
+            for(int i = 0; i < length; i++){
+                if(guess[i] == secretCode[i]){
                     correctPosition++;
+                    secretUsed[i] = true;
+                    guessUsed[i] = true;
+                }
             }
             if(correctPosition == length){
                 System.out.println("YOU WIN!");
                 System.exit(0);
             }
-            System.out.println("Correct positions: " + correctPosition);
-            System.out.println("Attempts: " + attempts);
-            for (int i = 0; i < length; i++) {
-                for (int j = 0; j < length; j++) {
-                    if (guess[i] == secretCode[j] && i != j)
+            for(int i = 0; i < length; i++){
+                if(guessUsed[i]) continue;
+                for(int j = 0; j < length; j++){
+                    if(secretUsed[j]) continue;
+                    if(guess[i] == secretCode[j]){
                         wrongPosition++;
+                        secretUsed[j] = true;
+                        break;
+                    }
                 }
             }
+            System.out.println("Correct positions: " + correctPosition);
+            System.out.println("Correct digits but wrong position: " + wrongPosition);
+            System.out.println("Attempts: " + attempts + "/10");
         }
+        System.out.print("YOU LOSE! Secret code: ");
+        for(int i = 0; i < length; i++){
+            System.out.print(secretCode[i]);
+        }
+        System.out.println();
     }
 }
