@@ -12,25 +12,49 @@ public class BitGrid {
         String difficulty = sc.nextLine().toUpperCase();
         switch (difficulty){
             case "EASY":
-                game.easyGame();
+                game.startGame(2);
                 break;
             case "MEDIUM":
-                game.mediumGame();
+                game.startGame(3);
                 break;
             case "HARD":
-                game.hardGame();
+                game.startGame(4);
                 break;
             default:
                 System.out.println("Invalid difficulty");
         }
     }
-    void easyGame(){
-        int length = 2;
-    }
-    void mediumGame(){
-        int length = 3;
-    }
-    void hardGame(){
-        int length = 4;
+    void startGame(int length){
+        int secretCode[] = new int[length],attempts = 0;
+        for(int i = 0; i < length; i++){
+            secretCode[i] = (int)(Math.random()*10);
+        }
+        while(true) {
+            attempts++;
+            System.out.println("Enter guess: ");
+            String guessVar = sc.nextLine();
+            int wrongPosition = 0, correctPosition = 0;
+
+            int guess[] = new int[length];
+            for (int i = 0; i < length; i++) {
+                guess[i] = guessVar.charAt(i) - '0';
+            }
+            for (int i = 0; i < length; i++) {
+                if (guess[i] == secretCode[i])
+                    correctPosition++;
+            }
+            if(correctPosition == length){
+                System.out.println("YOU WIN!");
+                System.exit(0);
+            }
+            System.out.println("Correct positions: " + correctPosition);
+            System.out.println("Attempts: " + attempts);
+            for (int i = 0; i < length; i++) {
+                for (int j = 0; j < length; j++) {
+                    if (guess[i] == secretCode[j] && i != j)
+                        wrongPosition++;
+                }
+            }
+        }
     }
 }
